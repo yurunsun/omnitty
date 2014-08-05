@@ -9,11 +9,10 @@ Machine *machine_new(const std::string &login, const std::string &name, int vtro
     Machine *m = new Machine;
     m->login = login;
     m->name = name;
+    m->tag = false;
     m->alive = true;
     m->vt = rote_vt_create(vtrows, vtcols);
-
-    /* build the command line and fork an ssh to the given machine */
-    m->pid = rote_vt_forkpty(m->vt, m->login.c_str());
+    m->pid = rote_vt_forkpty(m->vt, m->login.c_str());  /* build the command line and fork an ssh to the given machine */
     return m;
 }
 

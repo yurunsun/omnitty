@@ -9,12 +9,10 @@ PRECOMPILED_HEADER = stdafx.h
 OBJECTS_DIR = .objs
 TARGET = omnitty.exe
 DEPENDPATH += .
-INCLUDEPATH += .
 QMAKE_CXXFLAGS += -std=c++0x -g -fno-omit-frame-pointer
 QMAKE_CLEAN += $(TARGET) $(QMAKE_TARGET)
 LIBS += -lrote -lncurses
 
 # Input
-HEADERS += curutil.h help.h machine.h machmgr.h menu.h minibuf.h \
-    stdafx.h
+HEADERS += curutil.h help.h machine.h machmgr.h menu.h minibuf.h stdafx.h
 SOURCES += curutil.cpp help.cpp machine.cpp machmgr.cpp main.cpp menu.cpp minibuf.cpp

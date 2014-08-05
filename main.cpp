@@ -6,6 +6,8 @@
 #include "minibuf.h"
 #include "menu.h"
 
+using namespace std;
+
 /* minimum terminal dimensions to run program */
 #define MIN_REQUIRED_WIDTH 80
 #define MIN_REQUIRED_HEIGHT 25
@@ -220,11 +222,11 @@ void redraw(bool force_full_redraw) {
    update_cast_label();
 }
 
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
+vector<string> split(const string &s, char delim) {
+    vector<string> elems;
+    stringstream ss(s);
+    string item;
+    while (getline(ss, item, delim)) {
         elems.push_back(item);
     }
     return elems;
@@ -232,14 +234,14 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 static void add_machines_from_file(const char *file)
 {
-    std::ifstream ifs(file);
+    ifstream ifs(file);
     if (!ifs.is_open()) {
         minibuf_msg(minibuf, "Fail to open file", 0xF1);
         return;
     }
-    std::string line;
-    while (std::getline(ifs, line)) {
-        std::vector<std::string> tokens = split(line, '=');
+    string line;
+    while (getline(ifs, line)) {
+        vector<string> tokens = split(line, '=');
         if (tokens.size() == 2) {
             machmgr_add(tokens[0], tokens[1]);
         }
@@ -247,50 +249,6 @@ static void add_machines_from_file(const char *file)
 
     ifs.close();
     minibuf_put(minibuf, NULL, 0x70);
-
-
-//   static char buf[128];
-//   bool pipe = false;
-//   FILE *f;
-
-//   if (getenv("OMNITTY_AT_COMMAND")) {
-//      /* popen() a command */
-//      pipe = true;
-//      strcpy(buf, getenv("OMNITTY_AT_COMMAND"));
-//      strcat(buf, " ");
-//      strcat(buf, file);
-//      strcat(buf, " 2>/dev/null");
-//      f = popen(buf, "r");
-//   }
-//   else f = fopen(file, "r");
-   
-//   if (!f) {
-//      minibuf_msg(minibuf, pipe ?
-//         "Can't execute command specified by OMNITTY_AT_COMMAND" :
-//         "Can't read that file.", 0xF1);
-//      return;
-//   }
-
-//   minibuf_put(minibuf, pipe ? "Adding machines supplied by command..." :
-//                               "Adding machines from file...", 0x70);
-
-//   while (1 == fscanf(f, "%s", buf)) machmgr_add(buf);
-
-//   if (pipe) {
-//      if (0 != pclose(f))
-//         minibuf_msg(minibuf, "Command given by OMNITTY_AT_COMMAND exited "
-//                              "with error.", 0xF1);
-//      /* at this point SIGCHLD will have caused zombie_count to be one more
-//       * than it should, since the child command has already been reaped
-//       * by pclose(). If we don't correct zombie_count, wait() will block
-//       * in the main loop, since it will try to reap a zombie that does not yet
-//       * exist. */
-//      zombie_count--;
-//   }
-//   else
-//      fclose(f);
-
-//   minibuf_put(minibuf, NULL, 0x70);
 }
 
 static void add_machine() {
@@ -310,34 +268,24 @@ static void delete_machine() {
        && (*buf == 'y' || *buf == 'Y')) machmgr_delete_current();
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char* argv[])
+{
    int vtcols, vtrows, ch = 0;
    int list_win_chars = LISTWIN_DEFAULT_CHARS;
    int term_win_chars = TERMWIN_DEFAULT_CHARS;
    bool quit = false;
    pid_t chldpid;
 
-   /* process command-line options */
-   while ( 0 < (ch = getopt(argc, argv, "W:T:")) ) {
-      switch (ch) {
-         case 'W': list_win_chars = atoi(optarg); break;
-	 case 'T': term_win_chars = atoi(optarg);
-		   if( term_win_chars < TERMWIN_MIN ) {
-		       fprintf(stderr, " terminal area too narrow: %d\n", 
-                                                        term_win_chars);
-		       fputs(RTFM, stderr);
-		       exit(2);
-		   }
-		   break;
-         default: fputs(RTFM, stderr); exit(2);
-      }
-   }
    signal(SIGCHLD, sigchld_handler);
    curses_init();
    wins_init(&vtrows, &vtcols, list_win_chars, term_win_chars);
    menu_init(minibuf);
 
    machmgr_init(listwin, vtrows, vtcols);
+
+   if (argc > 1) {
+        add_machines_from_file(argv[1]);
+   }
 
    while (!quit) {
       if (zombie_count) {
