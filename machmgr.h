@@ -1,35 +1,7 @@
-/* machmgr.h
- *
- * Omnitty SSH Multiplexer
- * Copyright (c) 2004 Bruno Takahashi C. de Oliveira
- * All rights reserved.
- *
- * LICENSE INFORMATION:
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- * Copyright (c) 2002 Bruno T. C. de Oliveira
- */
+#pragma once
 
-#ifndef omnitty_machmgr_h
-#define omnitty_machmgr_h
-
-#include <ncurses.h>
-#include <sys/types.h>
-#include <string>
-
-
-/* Initialize the machine manager. The given window will be used as the
+/**
+ * Initialize the machine manager. The given window will be used as the
  * "list window", that is, the window that will display the list of the
  * available machines. The vtrows,vtcols arguments specify the
  * size of the virtual terminal of the machines. It needs to know this
@@ -38,10 +10,11 @@
  * functions (e.g. machine_new) */
 void machmgr_init(WINDOW *w, int vtrows, int vtcols);
 
-/* Draws the machine list onto the list window */
+/** Draws the machine list onto the list window */
 void machmgr_draw_list();
 
-/* Draws the summary area in the passed window. The "summary" consists of
+/**
+ * Draws the summary area in the passed window. The "summary" consists of
  * a few characters for each machine, and those characters give the user an 
  * idea of what is going on in that machine's terminal. Those characters
  * will be the characters that are "near" the cursor. This is difficult
@@ -63,23 +36,30 @@ void machmgr_draw_list();
  */
 void machmgr_draw_summary(WINDOW *w);
 
-/* Draws the virtual terminal for the currently selected machine in the
+/**
+ * Draws the virtual terminal for the currently selected machine in the
  * given window. Assumes the dimensions of the given window match the
- * vtrows,vtcols arguments passed to machmgr_init. */
+ * vtrows,vtcols arguments passed to machmgr_init.
+ */
 void machmgr_draw_vt(WINDOW *w);
 
-/* Adds a new machine to the machine manager given its name. Takes care
- * of creating the machine and adding it to the list. */
+/**
+ * Adds a new machine to the machine manager given its name. Takes care
+ * of creating the machine and adding it to the list.
+ */
 void machmgr_add(const std::string &name, const std::string &login);
 
-/* Deletes currently selected machine. */
+/** Deletes currently selected machine. */
 void machmgr_delete_current();
 
-/* Updates the virtual terminals of all machines. This function should
- * be called regularly. */
+/**
+ * Updates the virtual terminals of all machines. This function should
+ * be called regularly.
+*/
 void machmgr_update();
 
-/* Toggles multicast mode. When multicast mode is on, machmgr_forward_keypress
+/**
+ * Toggles multicast mode. When multicast mode is on, machmgr_forward_keypress
  * will send the keypress to all tagged machines; when multicast mode is
  * off, machmgr_forward_keypress will send keypresses only to the currently
  * selected machine. 
@@ -135,6 +115,3 @@ void machmgr_handle_death(pid_t p);
 
 /* Rename the currently selected machine */
 void machmgr_rename(char *newname);
-
-#endif
-

@@ -4,6 +4,8 @@
 
 TEMPLATE = app
 CONFIG -= qt
+CONFIG += precompile_header
+PRECOMPILED_HEADER = stdafx.h
 OBJECTS_DIR = .objs
 TARGET = omnitty.exe
 DEPENDPATH += .
@@ -13,5 +15,6 @@ QMAKE_CLEAN += $(TARGET) $(QMAKE_TARGET)
 LIBS += -lrote -lncurses
 
 # Input
-HEADERS += curutil.h help.h machine.h machmgr.h menu.h minibuf.h
+HEADERS += curutil.h help.h machine.h machmgr.h menu.h minibuf.h \
+    stdafx.h
 SOURCES += curutil.cpp help.cpp machine.cpp machmgr.cpp main.cpp menu.cpp minibuf.cpp
