@@ -24,11 +24,15 @@
 #ifndef omnitty_machine_h
 #define omnitty_machine_h
 
+extern "C" {
 #include <rote/rote.h>
+}
+
 #define TAGSTACK_SIZE 8
 
 /* This structure represents each machine the program interacts with */
-typedef struct Machine_ {
+struct Machine
+{
    char *name;  /* name of the machine */
    bool tag;    /* whether the machine is 'tagged' */
 
@@ -43,7 +47,7 @@ typedef struct Machine_ {
     * later retrieval */
    bool tagstack[TAGSTACK_SIZE];
    int tagstack_count;
-} Machine;
+};
 
 /* Creates a new machine with the given name and virtual terminal dimensions.
  * Returns a pointer to the newly created machine. The machine must be

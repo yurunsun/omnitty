@@ -25,11 +25,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define CMD_FORMAT "/usr/bin/ssh %s"
+#define CMD_FORMAT "/usr/bin/sshpass -p 15j4h8y-ob ssh -p 4353 root@%s"
 
 Machine *machine_new(const char *name, int vtrows, int vtcols) {
    static char cmd[128];
-   Machine *m = malloc(sizeof(Machine));
+   Machine *m = (Machine *)malloc(sizeof(Machine));//new Machine;//malloc(sizeof(Machine));
    memset(m, 0, sizeof(Machine));
    
    m->alive = true;

@@ -5,12 +5,13 @@
 TEMPLATE = app
 CONFIG -= qt
 OBJECTS_DIR = .objs
-TARGET = 
+TARGET = omnitty.exe
 DEPENDPATH += .
 INCLUDEPATH += .
+QMAKE_CXXFLAGS += -std=c++0x -g -fno-omit-frame-pointer
 QMAKE_CLEAN += $(TARGET) $(QMAKE_TARGET)
-LIBS += -lrote
+LIBS += -lrote -lncurses
 
 # Input
 HEADERS += curutil.h help.h machine.h machmgr.h menu.h minibuf.h
-SOURCES += curutil.c help.c machine.c machmgr.c main.c menu.c minibuf.c
+SOURCES += curutil.cpp help.cpp machine.cpp machmgr.cpp main.cpp menu.cpp minibuf.cpp
