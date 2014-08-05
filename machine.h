@@ -28,25 +28,23 @@ extern "C" {
 #include <rote/rote.h>
 }
 
+#include <string>
+
 #define TAGSTACK_SIZE 8
 
 /* This structure represents each machine the program interacts with */
 struct Machine
 {
-   char *name;  /* name of the machine */
-   bool tag;    /* whether the machine is 'tagged' */
-
-   bool alive;  /* initially set to true; set to false when 
-                 * main program notifies that a certain pid has died and
-                 * it matches this machine's ssh pid */
-
-   RoteTerm *vt; /* the machine's virtual terminal (ROTE library) */
-   pid_t pid;    /* pid of ssh process running in terminal */
-
-   /* the following stack is used for storing the 'tagged' state for
-    * later retrieval */
-   bool tagstack[TAGSTACK_SIZE];
-   int tagstack_count;
+    std::string login;
+    std::string name;       /* name of the machine */
+    bool tag;               /* whether the machine is 'tagged' */
+    bool alive;             /* initially set to true; set to false when
+                             * main program notifies that a certain pid has died and
+                             * it matches this machine's ssh pid */
+    RoteTerm *vt;           /* the machine's virtual terminal (ROTE library) */
+    pid_t pid;              /* pid of ssh process running in terminal */
+    bool tagstack[TAGSTACK_SIZE];    /* the following stack is used for storing the 'tagged' state for later retrieval */
+    int tagstack_count;
 };
 
 /* Creates a new machine with the given name and virtual terminal dimensions.
@@ -56,7 +54,7 @@ struct Machine
  * in the pid field of the returned machine structure. The ssh runs
  * in the RoteTerm virtual terminal, whose address is also returned in
  * the structure. */
-Machine *machine_new(const char *name, int vtrows, int vtcols);
+Machine *machine_new(const std::string& login, const std::string& name, int vtrows, int vtcols);
 
 /* Destroyes a machine previously created my machine_new. */
 void machine_destroy(Machine*);

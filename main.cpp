@@ -26,6 +26,12 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <string.h>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+#include <iterator>
 
 #include "curutil.h"
 #include "machine.h"
@@ -243,49 +249,77 @@ void redraw(bool force_full_redraw) {
    update_cast_label();
 }
 
-static void add_machines_from_file(const char *file) {
-   static char buf[128];
-   bool pipe = false;
-   FILE *f;
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
 
-   if (getenv("OMNITTY_AT_COMMAND")) {
-      /* popen() a command */
-      pipe = true;
-      strcpy(buf, getenv("OMNITTY_AT_COMMAND"));
-      strcat(buf, " ");
-      strcat(buf, file);
-      strcat(buf, " 2>/dev/null");
-      f = popen(buf, "r");
-   }
-   else f = fopen(file, "r");
+static void add_machines_from_file(const char *file)
+{
+    std::ifstream ifs(file);
+    if (!ifs.is_open()) {
+        minibuf_msg(minibuf, "Fail to open file", 0xF1);
+        return;
+    }
+    std::string line;
+    while (std::getline(ifs, line)) {
+        std::vector<std::string> tokens = split(line, '=');
+        if (tokens.size() == 2) {
+            machmgr_add(tokens[0], tokens[1]);
+        }
+    }
+
+    ifs.close();
+    minibuf_put(minibuf, NULL, 0x70);
+
+
+//   static char buf[128];
+//   bool pipe = false;
+//   FILE *f;
+
+//   if (getenv("OMNITTY_AT_COMMAND")) {
+//      /* popen() a command */
+//      pipe = true;
+//      strcpy(buf, getenv("OMNITTY_AT_COMMAND"));
+//      strcat(buf, " ");
+//      strcat(buf, file);
+//      strcat(buf, " 2>/dev/null");
+//      f = popen(buf, "r");
+//   }
+//   else f = fopen(file, "r");
    
-   if (!f) {
-      minibuf_msg(minibuf, pipe ? 
-         "Can't execute command specified by OMNITTY_AT_COMMAND" : 
-         "Can't read that file.", 0xF1);
-      return;
-   }
+//   if (!f) {
+//      minibuf_msg(minibuf, pipe ?
+//         "Can't execute command specified by OMNITTY_AT_COMMAND" :
+//         "Can't read that file.", 0xF1);
+//      return;
+//   }
 
-   minibuf_put(minibuf, pipe ? "Adding machines supplied by command..." :
-                               "Adding machines from file...", 0x70);
+//   minibuf_put(minibuf, pipe ? "Adding machines supplied by command..." :
+//                               "Adding machines from file...", 0x70);
 
-   while (1 == fscanf(f, "%s", buf)) machmgr_add(buf);
+//   while (1 == fscanf(f, "%s", buf)) machmgr_add(buf);
 
-   if (pipe) {
-      if (0 != pclose(f)) 
-         minibuf_msg(minibuf, "Command given by OMNITTY_AT_COMMAND exited "
-                              "with error.", 0xF1);
-      /* at this point SIGCHLD will have caused zombie_count to be one more
-       * than it should, since the child command has already been reaped
-       * by pclose(). If we don't correct zombie_count, wait() will block
-       * in the main loop, since it will try to reap a zombie that does not yet 
-       * exist. */
-      zombie_count--;
-   }
-   else
-      fclose(f);
+//   if (pipe) {
+//      if (0 != pclose(f))
+//         minibuf_msg(minibuf, "Command given by OMNITTY_AT_COMMAND exited "
+//                              "with error.", 0xF1);
+//      /* at this point SIGCHLD will have caused zombie_count to be one more
+//       * than it should, since the child command has already been reaped
+//       * by pclose(). If we don't correct zombie_count, wait() will block
+//       * in the main loop, since it will try to reap a zombie that does not yet
+//       * exist. */
+//      zombie_count--;
+//   }
+//   else
+//      fclose(f);
 
-   minibuf_put(minibuf, NULL, 0x70);
+//   minibuf_put(minibuf, NULL, 0x70);
 }
 
 static void add_machine() {
@@ -294,7 +328,7 @@ static void add_machine() {
    *buf = 0;
    if (minibuf_prompt(minibuf, "Add: ", 0xE0, buf, 32)) {
       if (*buf == '@') add_machines_from_file(buf+1);
-      else machmgr_add(buf);
+      //else machmgr_add(buf);
    }
 }
 

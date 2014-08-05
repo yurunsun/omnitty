@@ -26,6 +26,8 @@
 
 #include <ncurses.h>
 #include <sys/types.h>
+#include <string>
+
 
 /* Initialize the machine manager. The given window will be used as the
  * "list window", that is, the window that will display the list of the
@@ -68,7 +70,7 @@ void machmgr_draw_vt(WINDOW *w);
 
 /* Adds a new machine to the machine manager given its name. Takes care
  * of creating the machine and adding it to the list. */
-void machmgr_add(const char *);
+void machmgr_add(const std::string &name, const std::string &login);
 
 /* Deletes currently selected machine. */
 void machmgr_delete_current();

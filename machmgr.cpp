@@ -96,7 +96,7 @@ void machmgr_draw_list() {
        * characters. We say w-2 because one character of the width was
        * used up when printing '*' and another one must be left blank
        * at the end */
-      p = machs[i]->name; j = w - 2;
+      p = machs[i]->name.c_str(); j = w - 2;
       while (j--) {
          waddch(listwin, *p ? *p : ' ');
          if (*p) p++;
@@ -104,11 +104,16 @@ void machmgr_draw_list() {
    }
 }
 
-void machmgr_add(const char *machname) {
-   if (!*machname) return;
-   if (machcount >= MACHINE_MAX) return;
-   machs[machcount++] = machine_new(machname, vtrows, vtcols);
-   machmgr_selmach_validate();
+void machmgr_add(const std::string& name, const std::string& login)
+{
+    if (name.empty() || login.empty()) {
+        return;
+    }
+    if (machcount >= MACHINE_MAX) {
+        return;
+    }
+    machs[machcount++] = machine_new(login, name, vtrows, vtcols);
+    machmgr_selmach_validate();
 }
 
 static void machmgr_delete(int index) {

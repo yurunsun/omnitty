@@ -2,6 +2,7 @@
 *.pro.user
 *.exe
 Makefile
+*.txt
 
 # Compiled Object files
 *.slo
