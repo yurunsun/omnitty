@@ -22,8 +22,8 @@ using namespace std;
 #define SPLASH_LINE_2 "Copyright (c) 2004 Bruno T. C. de Oliveira"
 
 /* how many characters wide the list window will be, by default */
-#define LISTWIN_DEFAULT_CHARS 8
-#define TERMWIN_DEFAULT_CHARS 80
+#define LISTWIN_DEFAULT_CHARS 15
+#define TERMWIN_DEFAULT_CHARS 120
 #define TERMWIN_MIN 80
 
 #define RTFM "Syntax: omnitty [-W list_width] [-T term_width]\n" \
