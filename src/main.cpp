@@ -23,7 +23,7 @@ using namespace std;
 
 /* how many characters wide the list window will be, by default */
 #define LISTWIN_DEFAULT_CHARS 15
-#define TERMWIN_DEFAULT_CHARS 120
+#define TERMWIN_DEFAULT_CHARS 150
 #define TERMWIN_MIN 80
 
 #define RTFM "Syntax: omnitty [-W list_width] [-T term_width]\n" \
@@ -273,6 +273,13 @@ int main(int argc, char* argv[])
    int vtcols, vtrows, ch = 0;
    int list_win_chars = LISTWIN_DEFAULT_CHARS;
    int term_win_chars = TERMWIN_DEFAULT_CHARS;
+   if (argc > 2) {
+		int custom_term_win_chars = atoi(argv[2]);
+		if (custom_term_win_chars >= 120 && custom_term_win_chars <= 180) {
+			term_win_chars = custom_term_win_chars;
+		}
+   }
+
    bool quit = false;
    pid_t chldpid;
 
@@ -286,7 +293,7 @@ int main(int argc, char* argv[])
    if (argc > 1) {
         add_machines_from_file(argv[1]);
    }
-
+   
    while (!quit) {
       if (zombie_count) {
          zombie_count--;
